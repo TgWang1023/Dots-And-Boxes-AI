@@ -331,7 +331,15 @@ class BoxesandGridsGame():
      # be the optimal move made by the function.
 
     def minimax(self,horizontal,vertical):
-        return self.list_possible_moves(horizontal,vertical)[0];
+        all_moves = self.list_possible_moves(horizontal, vertical)
+        max_score = -999
+        max_move = all_moves[0]
+        for move in all_moves:
+            score = self.evaluate(move, horizontal, vertical)
+            if score > max_score:
+                max_score = score
+                max_move = move
+        return max_move
 
 
     def alphabetapruning():
@@ -341,10 +349,20 @@ class BoxesandGridsGame():
     '''
     Write down you own evaluation strategy in the evaluation function 
     '''
-    def evaluate(self,horizontal,vertical):
-        value = 0;
-        return value
-    
+    def evaluate(self, move, horizontal, vertical):
+        # Prioritize making own score move, then prevent enemy from scoring
+        next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+        eval_result = self.increment_score(move, horizontal, vertical)
+        all_future_moves = self.list_possible_moves(next_h, next_v)
+        max_score = 0
+        for future_move in all_future_moves:
+            score = self.increment_score(future_move, next_h, next_v)
+            if score > max_score:
+                max_score = score
+        if eval_result > 0:
+            return eval_result * 2 + max_score
+        else:
+            return -max_score
 
  
 bg=BoxesandGridsGame();

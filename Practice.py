@@ -268,16 +268,16 @@ Uncomment the following sections one after the other . Press Ctrl+C to break the
 Please uncomment them one after the other and run each block before running the next block.
 '''
  #Block 1
-# move1=[0,1,0] # vertical move
-# gridgame.make_move(move1,1);
+move1=[0,1,0] # vertical move
+gridgame.make_move(move1,1);
 
 # #Block2 
-# move2=[1,0,1]# vertical move
-# gridgame.make_move(move2,1);
+move2=[1,0,1]# vertical move
+gridgame.make_move(move2,1);
 
 #Block 3
-# move3=[0,0,0]
-# gridgame.make_move(move3,1)
+move3=[0,0,0]
+gridgame.make_move(move3,1)
 
 '''
 Checking the score associated with a given move
@@ -307,12 +307,12 @@ print (' vertical matrix',v_matrix)
 Finding the socre for a given move
 '''
 #Block 6
-next_move1=[5,5,0];
+next_move1=[0,0,1];
 print (h_matrix,v_matrix)
 score=gridgame.increment_score(next_move1,h_matrix,v_matrix);
 print ('Potential Score due to the move',score)
 
-next_move2=[5,0,1];
+next_move2=[3,3,1];
 score=gridgame.increment_score(next_move2,h_matrix,v_matrix);
 print ('Potential Score due to the move',score)
 
@@ -328,7 +328,7 @@ print ('possible moves',possible_moves)
 List all the next states in a given a move
 '''
 #Block 8
-#print 'vertical',v_matrix
+# print 'vertical',v_matrix
 state_h,state_v,score=gridgame.next_state(next_move1,h_matrix,v_matrix)
 print ('horizontal matrix for the next state',state_h)
 print ('vertical matrix for the next state', state_v)
@@ -350,10 +350,9 @@ print ('Current Vertical State', state_v)
 
    
    
-'''    
-#bg=PracticeBoxesandGridGame();
+
+bg=PracticeBoxesandGridGame();
 while (1):
     gridgame.update();
   
     time.sleep(2)
-'''
