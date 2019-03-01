@@ -317,8 +317,11 @@ class BoxesandGridsGame():
         # next_move = self.minimax(m, self.boardh, self.boardv, 2, True)
         next_move_alpha = self.alphabetapruning(m, self.boardh, self.boardv, 2, True, float('-inf'), float('inf'));
         
-        
+        # Without Pruning
+        # self.make_move(next_move, 1)
+        # print('move_made by player 2', next_move)
 
+        # With Pruning
         self.make_move(next_move_alpha, 1)
         print('move_made by player 2', next_move_alpha)
         
@@ -339,7 +342,7 @@ class BoxesandGridsGame():
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.minimax(move, next_h, next_v, depth - 1, False)
-                if self.evaluate(new_eval, next_h, next_v) > self.evaluate(max_eval, next_h, next_v):
+                if self.evaluate(new_eval, next_h, next_v, max_player) > self.evaluate(max_eval, next_h, next_v, max_player):
                     max_eval = new_eval
             return max_eval
         else:
@@ -347,7 +350,7 @@ class BoxesandGridsGame():
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.minimax(move, next_h, next_v, depth - 1, True)
-                if -self.evaluate(new_eval, next_h, next_v) < -self.evaluate(min_eval, next_h, next_v):
+                if self.evaluate(new_eval, next_h, next_v, max_player) < self.evaluate(min_eval, next_h, next_v, max_player):
                     min_eval = new_eval
             return min_eval
 
@@ -363,10 +366,10 @@ class BoxesandGridsGame():
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, False, rec_alpha, rec_beta)
-                if self.evaluate(new_eval, next_h, next_v) > self.evaluate(max_eval, next_h, next_v):
+                if self.evaluate(new_eval, next_h, next_v, max_player) > self.evaluate(max_eval, next_h, next_v, max_player):
                     max_eval = new_eval
-                if self.evaluate(new_eval, next_h, next_v) > rec_alpha:
-                    rec_alpha = self.evaluate(new_eval, next_h, next_v)
+                if self.evaluate(new_eval, next_h, next_v, max_player) > rec_alpha:
+                    rec_alpha = self.evaluate(new_eval, next_h, next_v, max_player)
                 if rec_beta <= rec_alpha:
                     break
             print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
@@ -376,10 +379,10 @@ class BoxesandGridsGame():
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, True, rec_alpha, rec_beta)
-                if -self.evaluate(new_eval, next_h, next_v) < -self.evaluate(min_eval, next_h, next_v):
+                if self.evaluate(new_eval, next_h, next_v, max_player) < self.evaluate(min_eval, next_h, next_v, max_player):
                     min_eval = new_eval
-                if -self.evaluate(new_eval, next_h, next_v) < -rec_beta:
-                    rec_beta = -self.evaluate(new_eval, next_h, next_v)
+                if self.evaluate(new_eval, next_h, next_v, max_player) < rec_beta:
+                    rec_beta = self.evaluate(new_eval, next_h, next_v, max_player)
                 if rec_beta <= rec_alpha:
                     break
             print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
@@ -389,7 +392,10 @@ class BoxesandGridsGame():
     '''
     Write down you own evaluation strategy in the evaluation function 
     '''
-    def evaluate(self, move, horizontal, vertical):
+    def evaluate(self, move, horizontal, vertical, max_player):
+        multiplier = 1
+        if max_player == False:
+            multiplier = -1
         next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
         eval_result = self.increment_score(move, horizontal, vertical)
         all_future_moves = self.list_possible_moves(next_h, next_v)
@@ -399,9 +405,9 @@ class BoxesandGridsGame():
             if score > max_score:
                 max_score = score
         if eval_result > 0:
-            return eval_result * 2 + max_score
+            return (eval_result * 2 + max_score) * multiplier
         else:
-            return -max_score
+            return (-max_score) * multiplier
         
 
  
