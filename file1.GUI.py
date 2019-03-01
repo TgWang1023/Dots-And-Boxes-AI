@@ -342,7 +342,7 @@ class BoxesandGridsGame():
         return max_move
 
 
-    def alphabetapruning():
+    def alphabetapruning(self,horizontal,vertical):
         return 
 
        
@@ -373,3 +373,38 @@ while (bg.game_ends(bg.boardh,bg.boardv)==False):
     time.sleep(2)
 time.sleep(10)
 pygame.quit()
+
+# BACKUP
+# def minimax(self,horizontal,vertical):
+#         all_moves = self.list_possible_moves(horizontal, vertical)
+#         max_score = -999
+#         max_move = all_moves[0]
+#         for move in all_moves:
+#             score = self.evaluate(move, horizontal, vertical)
+#             if score > max_score:
+#                 max_score = score
+#                 max_move = move
+#         return max_move
+
+
+#     def alphabetapruning(self,horizontal,vertical):
+#         return 
+
+       
+#     '''
+#     Write down you own evaluation strategy in the evaluation function 
+#     '''
+#     def evaluate(self, move, horizontal, vertical):
+#         # Prioritize making own score move, then prevent enemy from scoring
+#         next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+#         eval_result = self.increment_score(move, horizontal, vertical)
+#         all_future_moves = self.list_possible_moves(next_h, next_v)
+#         max_score = 0
+#         for future_move in all_future_moves:
+#             score = self.increment_score(future_move, next_h, next_v)
+#             if score > max_score:
+#                 max_score = score
+#         if eval_result > 0:
+#             return eval_result * 2 + max_score
+#         else:
+#             return -max_score
