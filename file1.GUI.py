@@ -352,8 +352,26 @@ class BoxesandGridsGame():
             return min_eval
 
 
-    def alphabetapruning(self,horizontal,vertical):
-        return 
+    def alphabetapruning(self, next_move, horizontal, vertical, depth, max_player):
+        moves = self.list_possible_moves(horizontal, vertical)
+        if len(moves) <= 0 or depth <= 0:
+            return next_move
+        if max_player == True:
+            max_eval = moves[0]
+            for move in moves:
+                next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+                new_eval = self.minimax(move, next_h, next_v, depth - 1, False)
+                if self.evaluate(new_eval, next_h, next_v) > self.evaluate(max_eval, next_h, next_v):
+                    max_eval = new_eval
+            return max_eval
+        else:
+            min_eval = moves[0]
+            for move in moves:
+                next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+                new_eval = self.minimax(move, next_h, next_v, depth - 1, True)
+                if -self.evaluate(new_eval, next_h, next_v) < -self.evaluate(min_eval, next_h, next_v):
+                    min_eval = new_eval
+            return min_eval
 
        
     '''
