@@ -313,8 +313,8 @@ class BoxesandGridsGame():
         '''
         
         ## change the next line of minimax/ aplpha-beta pruning according to your input and output requirments
-        
-        next_move=self.minimax(self.boardh,self.boardv)
+        m = self.list_possible_moves(self.boardh, self.boardv)[0]
+        next_move=self.minimax(m, self.boardh, self.boardv, 2, True)
         #next_move_alpha=self.alphabetapruning();
         
         
@@ -330,16 +330,26 @@ class BoxesandGridsGame():
      # number of input parameters of the function and the output of the function must 
      # be the optimal move made by the function.
 
-    def minimax(self,horizontal,vertical):
-        all_moves = self.list_possible_moves(horizontal, vertical)
-        max_score = -999
-        max_move = all_moves[0]
-        for move in all_moves:
-            score = self.evaluate(move, horizontal, vertical)
-            if score > max_score:
-                max_score = score
-                max_move = move
-        return max_move
+    def minimax(self, next_move, horizontal, vertical, depth, max_player):
+        moves = self.list_possible_moves(horizontal, vertical)
+        if len(moves) <= 0 or depth <= 0:
+            return next_move
+        if max_player == True:
+            max_eval = moves[0]
+            for move in moves:
+                next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+                new_eval = self.minimax(move, next_h, next_v, depth - 1, False)
+                if self.evaluate(new_eval, next_h, next_v) > self.evaluate(max_eval, next_h, next_v):
+                    max_eval = new_eval
+            return max_eval
+        else:
+            min_eval = moves[0]
+            for move in moves:
+                next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
+                new_eval = self.minimax(move, next_h, next_v, depth - 1, True)
+                if -self.evaluate(new_eval, next_h, next_v) < -self.evaluate(min_eval, next_h, next_v):
+                    min_eval = new_eval
+            return min_eval
 
 
     def alphabetapruning(self,horizontal,vertical):
@@ -350,7 +360,6 @@ class BoxesandGridsGame():
     Write down you own evaluation strategy in the evaluation function 
     '''
     def evaluate(self, move, horizontal, vertical):
-        # Prioritize making own score move, then prevent enemy from scoring
         next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
         eval_result = self.increment_score(move, horizontal, vertical)
         all_future_moves = self.list_possible_moves(next_h, next_v)
@@ -363,6 +372,7 @@ class BoxesandGridsGame():
             return eval_result * 2 + max_score
         else:
             return -max_score
+        
 
  
 bg=BoxesandGridsGame();
