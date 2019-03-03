@@ -313,17 +313,17 @@ class BoxesandGridsGame():
         '''
         
         ## change the next line of minimax/ aplpha-beta pruning according to your input and output requirments
-        m = self.list_possible_moves(self.boardh, self.boardv)[0]
-        # next_move = self.minimax(m, self.boardh, self.boardv, 2, True)
-        next_move_alpha = self.alphabetapruning(m, self.boardh, self.boardv, 2, True, float('-inf'), float('inf'));
+        m = self.list_possible_moves(self.boardh, self.boardv)[0]     
         
         # Without Pruning
-        # self.make_move(next_move, 1)
-        # print('move_made by player 2', next_move)
+        next_move = self.minimax(m, self.boardh, self.boardv, 2, True)
+        self.make_move(next_move, 1)
+        print('move_made by player 2', next_move)
 
         # With Pruning
-        self.make_move(next_move_alpha, 1)
-        print('move_made by player 2', next_move_alpha)
+        # next_move_alpha = self.alphabetapruning(m, self.boardh, self.boardv, 2, True, float('-inf'), float('inf'))
+        # self.make_move(next_move_alpha, 1)
+        # print('move_made by player 2', next_move_alpha)
         
     '''
     Write down the code for minimax to a certain depth do no implement minimax all the way to the final state. 
@@ -356,9 +356,8 @@ class BoxesandGridsGame():
 
 
     def alphabetapruning(self, next_move, horizontal, vertical, depth, max_player, alpha, beta):
+        print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
         moves = self.list_possible_moves(horizontal, vertical)
-        rec_alpha = alpha
-        rec_beta = beta
         if len(moves) <= 0 or depth <= 0:
             return next_move
         if max_player == True:
@@ -366,26 +365,26 @@ class BoxesandGridsGame():
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, False, rec_alpha, rec_beta)
-                if self.evaluate(new_eval, next_h, next_v, max_player) > self.evaluate(max_eval, next_h, next_v, max_player):
+                eval_result = self.evaluate(new_eval, next_h, next_v, max_player)
+                if eval_result > self.evaluate(max_eval, next_h, next_v, max_player):
                     max_eval = new_eval
-                if self.evaluate(new_eval, next_h, next_v, max_player) > rec_alpha:
-                    rec_alpha = self.evaluate(new_eval, next_h, next_v, max_player)
+                if eval_result > rec_alpha:
+                    rec_alpha = eval_result
                 if rec_beta <= rec_alpha:
                     break
-            print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
             return max_eval
         else:
             min_eval = moves[0]
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
                 new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, True, rec_alpha, rec_beta)
-                if self.evaluate(new_eval, next_h, next_v, max_player) < self.evaluate(min_eval, next_h, next_v, max_player):
+                eval_result = self.evaluate(new_eval, next_h, next_v, max_player)
+                if eval_result < self.evaluate(min_eval, next_h, next_v, max_player):
                     min_eval = new_eval
-                if self.evaluate(new_eval, next_h, next_v, max_player) < rec_beta:
-                    rec_beta = self.evaluate(new_eval, next_h, next_v, max_player)
+                if eval_result < rec_beta:
+                    rec_beta = eval_result
                 if rec_beta <= rec_alpha:
                     break
-            print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
             return min_eval
 
        
@@ -405,7 +404,7 @@ class BoxesandGridsGame():
             if score > max_score:
                 max_score = score
         if eval_result > 0:
-            return (eval_result * 2 + max_score) * multiplier
+            return (eval_result * 2 - max_score) * multiplier
         else:
             return (-max_score) * multiplier
         
