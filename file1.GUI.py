@@ -316,14 +316,14 @@ class BoxesandGridsGame():
         m = self.list_possible_moves(self.boardh, self.boardv)[0]     
         
         # Without Pruning
-        next_move = self.minimax(m, self.boardh, self.boardv, 2, True)
-        self.make_move(next_move, 1)
-        print('move_made by player 2', next_move)
+        # next_move = self.minimax(m, self.boardh, self.boardv, 2, True)
+        # self.make_move(next_move, 1)
+        # print('move_made by player 2', next_move)
 
         # With Pruning
-        # next_move_alpha = self.alphabetapruning(m, self.boardh, self.boardv, 2, True, float('-inf'), float('inf'))
-        # self.make_move(next_move_alpha, 1)
-        # print('move_made by player 2', next_move_alpha)
+        next_move_alpha = self.alphabetapruning(m, self.boardh, self.boardv, 1, True, float('-inf'), float('inf'))
+        self.make_move(next_move_alpha, 1)
+        print('move_made by player 2', next_move_alpha)
         
     '''
     Write down the code for minimax to a certain depth do no implement minimax all the way to the final state. 
@@ -334,6 +334,7 @@ class BoxesandGridsGame():
      # be the optimal move made by the function.
 
     def minimax(self, next_move, horizontal, vertical, depth, max_player):
+        start_time = time.time()
         moves = self.list_possible_moves(horizontal, vertical)
         if len(moves) <= 0 or depth <= 0:
             return next_move
@@ -344,6 +345,7 @@ class BoxesandGridsGame():
                 new_eval = self.minimax(move, next_h, next_v, depth - 1, False)
                 if self.evaluate(new_eval, next_h, next_v, max_player) > self.evaluate(max_eval, next_h, next_v, max_player):
                     max_eval = new_eval
+            print("--- %s seconds ---" % (time.time() - start_time))
             return max_eval
         else:
             min_eval = moves[0]
@@ -352,11 +354,13 @@ class BoxesandGridsGame():
                 new_eval = self.minimax(move, next_h, next_v, depth - 1, True)
                 if self.evaluate(new_eval, next_h, next_v, max_player) < self.evaluate(min_eval, next_h, next_v, max_player):
                     min_eval = new_eval
+            print("--- %s seconds ---" % (time.time() - start_time))
             return min_eval
 
 
     def alphabetapruning(self, next_move, horizontal, vertical, depth, max_player, alpha, beta):
-        print("Current alpha: " + str(rec_alpha) + ", Current beta: " + str(rec_beta))
+        start_time = time.time()
+        print("Current alpha: " + str(alpha) + ", Current beta: " + str(beta))
         moves = self.list_possible_moves(horizontal, vertical)
         if len(moves) <= 0 or depth <= 0:
             return next_move
@@ -364,27 +368,27 @@ class BoxesandGridsGame():
             max_eval = moves[0]
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
-                new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, False, rec_alpha, rec_beta)
+                new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, False, alpha, beta)
                 eval_result = self.evaluate(new_eval, next_h, next_v, max_player)
                 if eval_result > self.evaluate(max_eval, next_h, next_v, max_player):
                     max_eval = new_eval
-                if eval_result > rec_alpha:
-                    rec_alpha = eval_result
-                if rec_beta <= rec_alpha:
+                alpha = max(self.evaluate(max_eval, next_h, next_v, max_player), alpha)
+                if beta <= alpha:
                     break
+            print("--- %s seconds ---" % (time.time() - start_time))
             return max_eval
         else:
             min_eval = moves[0]
             for move in moves:
                 next_h, next_v, f_s = self.next_state(move, horizontal, vertical)
-                new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, True, rec_alpha, rec_beta)
+                new_eval = self.alphabetapruning(move, next_h, next_v, depth - 1, True, alpha, beta)
                 eval_result = self.evaluate(new_eval, next_h, next_v, max_player)
                 if eval_result < self.evaluate(min_eval, next_h, next_v, max_player):
                     min_eval = new_eval
-                if eval_result < rec_beta:
-                    rec_beta = eval_result
-                if rec_beta <= rec_alpha:
+                beta = min(self.evaluate(min_eval, next_h, next_v, max_player), beta)
+                if beta <= alpha:
                     break
+            print("--- %s seconds ---" % (time.time() - start_time))
             return min_eval
 
        
