@@ -360,7 +360,6 @@ class BoxesandGridsGame():
 
     def alphabetapruning(self, next_move, horizontal, vertical, depth, max_player, alpha, beta):
         start_time = time.time()
-        print("Current alpha: " + str(alpha) + ", Current beta: " + str(beta))
         moves = self.list_possible_moves(horizontal, vertical)
         if len(moves) <= 0 or depth <= 0:
             return next_move
